@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+'''
+   Project: 5700 Project 1 Socket Basics
+   Author: Zhang.yifan2@husky.neu.edu
+               henry14ab@yahoo.com
+   Team: 
+   Date: 01/27/2016
+'''
+import socket
+import sys
+import getopt
+import ssl
+
+# variable declaration 
+
+defaultHostName = "cs5700sp16.ccs.neu.edu"
+defaultSSLPort = 27994
+defaultPort = 27993
+defautNeuId = "001616011"
+helloMsgFmt = "cs5700spring2016 HELLO %s\n"
+recvBlockSize = 8192
+solutionMsgFmt = "cs5700spring2016 %s\n"
+
+# function utilities 
+'''
+# cvtFmtStrToCompeteStr(_fmtStr, _string)
+# this function used to compose new string through
+# subsitute the variable in format string
+# _fmtStr: string formats which contains formats identifier
+# _string: the string you want to replace in format string
+'''
+def cvtFmtStrToCompeteStr(_fmtStr, _string):
+    return _fmtStr % _string
+
+'''
+# isContainStatus(_recvStr)
+# this function used to make a judgement of when
+# the loop will be end. In this case, if the string doesn't 
+# contain STATUS, return false
+# _recvStr: string recived from socket connection
+'''
+def isContainStatus(_recvStr):
+    if "STATUS" not in _recvStr:
+        return False
+    return True
+
+''''
+# strProcess(_dataRecved)
+# this function only split the string to 
+# a string array
+# _dataReceved: a string
+'''
+def strProcess(_dataRecved):
+    splitStr = _dataRecved.split(' ')
+    return splitStr
+''''
+# clacSolutionValue(_data)
+# this function will perform basic mathmatical
+# operation according to the protocol
+# _data: algebra expression string 
+''''
+def calcSolutionValue(_data):
+    if _data[3] == "+":
+        result = int(_data[2]) + int(_data[4]) 
+        return result
+    elif _data[3] == "-":
+        result = int(_data[2]) - int(_data[4])
+        return result
+    elif _data[3] == "*":
+        result = int(_data[2]) * int(_data[4])
+        return result
+    elif _data[3] == "/":
+        result = int(_data[2]) / int(_data[4])
+        return result 
+
+'''
+# main function which is the start of the program
+#argv: parameter recieved from environment 
+'''
+def main(argv):
+    try:
+        if  argv:
+            hostName = argv[-2]
+        else:
+            hostName = defaultHostName
+        port = defaultPort
+        neuID = argv[-1]
+        sslFlag = False
+        portFlag = False
+        opts, args = getopt.getopt(argv, "p:s")
+        for opt, arg in opts:
+            if opt == '-p':
+                port = int(arg)
+                portFlag = True
+            elif opt == '-s':
+                sslFlag = True
+        '''
+        # if the ssl option is chosen and the same time 
+        # if the -p option is omitted, then port number should 
+        # be default SSL port number which is 27994
+        '''    
+        if sslFlag:
+            if not portFlag:
+                port = defaultSSLPort
+    except Exception as msg:
+        print (msg)
+
+    # Produce initial massage
+    initialMsg = cvtFmtStrToCompeteStr(helloMsgFmt,neuID)
+    
+    # socket connection
+    try:
+        sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        if sslFlag:
+            sock = ssl.wrap_socket(sock, ssl_version=3)
+            
+        svrAddr = (hostName,port)
+        sock.connect(svrAddr)
+        
+        sock.sendall(initialMsg)
+        data = sock.recv(recvBlockSize)
+        while isContainStatus(data):
+            splitString = strProcess(data)
+            solution = str(calcSolutionValue(splitString))
+            solutionMsg = solutionMsgFmt % solution
+            sock.sendall(solutionMsg)
+            data = sock.recv(recvBlockSize)
+        print (data.split(" ")[-2])
+    except Exception as msg:
+        print (msg)
+    finally:
+        sock.close()
+# main function part 
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+
+

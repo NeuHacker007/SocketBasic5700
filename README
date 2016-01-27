@@ -1,0 +1,20 @@
+#####################################################################################
+# Project: Socket Basic																#
+# Authors: @Yifan Zhang(001616011) zhang.yifan2@husky.neu.edu						#
+#		   @Xinyi Zhang(001618402) henry14ab@yahoo.com								#
+# Team: 																			#
+# Date: 01/27/2016																	#
+#####################################################################################
+
+0x01 high level approach 
+	In this project, after our analysis of the requirement, we found that this project is a simple socket programming which consists of socket sending/recieving and data process. The reason why we choose Python as our priority language to solve this problem is that Python is quite powerfull tools which contains some amazing libraries so that it makes the work much more easier and efficient. 
+
+0x02 challenges we faces
+	To be honest that the program is not quite difficult but there is still some points made us think for a while. Because as we chose python as our problem solving tool, we never considered that we need a makefile to "compile" Python program. Usually, the make file is seen in C program or JAVA program but not Python. So, at the begining, we felt very confused about this issue, however, with the help of lecture and TAs, we found that makefile could accomplish more things rather than compiling program, for instance in this case, we use it to give our script execution priviledge. Therefore, in the end, we solved it. 
+
+	Another chanllenge should comes from SSL socket connection which is extra credit part. At the begining of doing this, we thought it so complex which makes us feel that our mind is blowing up. However, finally we found that we can simplify this problem just wrap the socket with SSL implementations which a default library in Python provides us with the functionalities. 
+
+0x03 overview of how we test our code
+	Actually speaking, we used some mature Python IDE, such as Wings to help us debug the code. A powerfall thing by using IDE is that we can set up break point somewhere so we can know exactly where the error comes from and how to fix that. In commond line interface, we use print functions to debug the problems which is not as efficiency as IDE but it still help us a lot in complete the program.      
+
+
